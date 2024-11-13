@@ -132,6 +132,11 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
         schemaCache.setCache(Collections.singletonList(defSchema));
     }
 
+    @NotNull
+    OracleSchema getPublicSchema() {
+        return this.publicSchema;
+    }
+
     @Override
     public Object getDataSourceFeature(String featureId) {
         switch (featureId) {
@@ -388,7 +393,7 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
 
     @Override
     public ErrorType discoverErrorType(@NotNull Throwable error) {
-        Throwable rootCause = GeneralUtils.getRootCause(error);
+        Throwable rootCause = CommonUtils.getRootCause(error);
         if (rootCause instanceof SQLException) {
             switch (((SQLException) rootCause).getErrorCode()) {
                 case OracleConstants.EC_NO_RESULTSET_AVAILABLE:
