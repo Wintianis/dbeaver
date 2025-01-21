@@ -29,8 +29,11 @@ import org.jkiss.dbeaver.ext.generic.edit.GenericTableManager;
 import org.jkiss.dbeaver.ext.generic.model.GenericDataSource;
 import org.jkiss.dbeaver.ext.generic.model.GenericStructContainer;
 import org.jkiss.dbeaver.ext.generic.model.GenericTableBase;
+import org.jkiss.dbeaver.ext.generic.model.GenericTableConstraintColumn;
 import org.jkiss.dbeaver.ext.generic.model.GenericTableForeignKey;
 import org.jkiss.dbeaver.ext.generic.model.GenericTableIndex;
+import org.jkiss.dbeaver.ext.generic.model.GenericTableIndexColumn;
+import org.jkiss.dbeaver.model.DBPObject;
 import org.jkiss.dbeaver.model.DBUtils;
 import org.jkiss.dbeaver.model.edit.DBECommandContext;
 import org.jkiss.dbeaver.model.edit.DBEObjectRenamer;
@@ -39,7 +42,9 @@ import org.jkiss.dbeaver.model.exec.DBCExecutionContext;
 import org.jkiss.dbeaver.model.impl.edit.SQLDatabasePersistAction;
 import org.jkiss.dbeaver.model.impl.sql.edit.SQLObjectEditor;
 import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
+import org.jkiss.dbeaver.model.struct.DBSEntityConstraint;
 import org.jkiss.dbeaver.model.struct.DBSObject;
+import org.jkiss.dbeaver.model.struct.rdb.DBSTableIndex;
 import org.jkiss.utils.CommonUtils;
 
 /**
@@ -81,6 +86,31 @@ public class GBase8sTableManager extends GenericTableManager implements DBEObjec
     @Override
     protected boolean isIncludeDropInDDL(GenericTableBase table) {
         return false;
+    }
+
+    @Override
+    protected boolean excludeFromDDL(NestedObjectCommand command, Collection<NestedObjectCommand> orderedCommands) {
+        // Filter out indexes for unique constraints (if they have the same name)
+        DBPObject object = command.getObject();
+        if (object instanceof DBSTableIndex) {
+            for (NestedObjectCommand ccom : orderedCommands) {
+                if (isUniqueConstraint(ccom)) {
+                    List<GenericTableIndexColumn> a = ((GenericTableIndex) object).getAttributeReferences(null);
+                    List<GenericTableConstraintColumn> b = ((GBase8sConstraint) ccom.getObject())
+                            .getAttributeReferences(null);
+                    if (a.size() == b.size() && a.stream()
+                            .allMatch(colA -> b.stream().anyMatch(colB -> colA.getName().equals(colB.getName())))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isUniqueConstraint(NestedObjectCommand command) {
+        return command.getObject() instanceof DBSEntityConstraint
+                && ((DBSEntityConstraint) command.getObject()).getConstraintType().isUnique();
     }
 
     @Override
