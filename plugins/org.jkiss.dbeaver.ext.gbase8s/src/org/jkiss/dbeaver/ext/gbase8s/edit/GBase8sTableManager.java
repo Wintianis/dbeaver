@@ -90,7 +90,7 @@ public class GBase8sTableManager extends GenericTableManager implements DBEObjec
 
     @Override
     protected boolean excludeFromDDL(NestedObjectCommand command, Collection<NestedObjectCommand> orderedCommands) {
-        // Filter out indexes for unique constraints (if they have the same name)
+        // Filter out indexes linked to unique constraints if their columns match
         DBPObject object = command.getObject();
         if (object instanceof DBSTableIndex) {
             for (NestedObjectCommand ccom : orderedCommands) {
