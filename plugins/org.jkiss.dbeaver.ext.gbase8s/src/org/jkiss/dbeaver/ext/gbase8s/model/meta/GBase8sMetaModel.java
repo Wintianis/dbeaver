@@ -30,7 +30,7 @@ import org.jkiss.dbeaver.DBException;
 import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.ext.gbase8s.GBase8sUtils;
 import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sCatalog;
-import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sConstraint;
+import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sUniqueKey;
 import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sDataTypeCache;
 import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sProcedure;
 import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sSchema;
@@ -101,9 +101,9 @@ public class GBase8sMetaModel extends GenericMetaModel {
     /**
      * Constraint
      */
-    public GBase8sConstraint createConstraintImpl(GenericTableBase table, String constraintName,
+    public GBase8sUniqueKey createConstraintImpl(GenericTableBase table, String constraintName,
             DBSEntityConstraintType constraintType, JDBCResultSet dbResult, boolean persisted) {
-        return new GBase8sConstraint(table, constraintName, null, constraintType, persisted);
+        return new GBase8sUniqueKey(table, constraintName, null, constraintType, persisted);
     }
 
     /**

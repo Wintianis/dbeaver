@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.jkiss.code.NotNull;
 import org.jkiss.dbeaver.DBException;
-import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sConstraint;
+import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sUniqueKey;
 import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sTableColumn;
 import org.jkiss.dbeaver.ext.generic.edit.GenericTableManager;
 import org.jkiss.dbeaver.ext.generic.model.GenericDataSource;
@@ -54,7 +54,7 @@ public class GBase8sTableManager extends GenericTableManager implements DBEObjec
 
     private static final Class<? extends DBSObject>[] CHILD_TYPES = CommonUtils.array(
             GBase8sTableColumn.class,
-            GBase8sConstraint.class,
+            GBase8sUniqueKey.class,
             GenericTableForeignKey.class,
             GenericTableIndex.class);
 
@@ -67,7 +67,7 @@ public class GBase8sTableManager extends GenericTableManager implements DBEObjec
     @Override
     public Collection<? extends DBSObject> getChildObjects(DBRProgressMonitor monitor, GenericTableBase object,
             Class<? extends DBSObject> childType) throws DBException {
-        if (childType == GBase8sConstraint.class) {
+        if (childType == GBase8sUniqueKey.class) {
             return object.getConstraints(monitor);
         }
         return super.getChildObjects(monitor, object, childType);
@@ -96,7 +96,7 @@ public class GBase8sTableManager extends GenericTableManager implements DBEObjec
             for (NestedObjectCommand ccom : orderedCommands) {
                 if (isUniqueConstraint(ccom)) {
                     List<GenericTableIndexColumn> a = ((GenericTableIndex) object).getAttributeReferences(null);
-                    List<GenericTableConstraintColumn> b = ((GBase8sConstraint) ccom.getObject())
+                    List<GenericTableConstraintColumn> b = ((GBase8sUniqueKey) ccom.getObject())
                             .getAttributeReferences(null);
                     if (a.size() == b.size() && a.stream()
                             .allMatch(colA -> b.stream().anyMatch(colB -> colA.getName().equals(colB.getName())))) {

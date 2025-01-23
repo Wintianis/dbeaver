@@ -48,12 +48,12 @@ public class GBase8sTable extends GenericTable {
     public List<DBSEntityConstraintInfo> getSupportedConstraints() {
         boolean isSupportCheckConstraint = getDataSource().getMetaModel().supportsCheckConstraints();
         List<DBSEntityConstraintInfo> result = new ArrayList<>();
-        result.add(DBSEntityConstraintInfo.of(DBSEntityConstraintType.PRIMARY_KEY, GBase8sConstraint.class));
+        result.add(DBSEntityConstraintInfo.of(DBSEntityConstraintType.PRIMARY_KEY, GBase8sUniqueKey.class));
         if (getDataSource().getMetaModel().supportsUniqueKeys()) {
-            result.add(DBSEntityConstraintInfo.of(DBSEntityConstraintType.UNIQUE_KEY, GBase8sConstraint.class));
+            result.add(DBSEntityConstraintInfo.of(DBSEntityConstraintType.UNIQUE_KEY, GBase8sUniqueKey.class));
         }
         if (isSupportCheckConstraint) {
-            result.add(DBSEntityConstraintInfo.of(DBSEntityConstraintType.CHECK, GBase8sConstraint.class));
+            result.add(DBSEntityConstraintInfo.of(DBSEntityConstraintType.CHECK, GBase8sUniqueKey.class));
         }
         return result;
     }

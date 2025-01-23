@@ -15,23 +15,20 @@
  * limitations under the License.
  */
 
-package org.jkiss.dbeaver.ext.gbase8s.edit;
+package org.jkiss.dbeaver.ext.gbase8s.model;
 
-import org.jkiss.dbeaver.ext.generic.edit.GenericPrimaryKeyManager;
+import org.jkiss.code.Nullable;
 import org.jkiss.dbeaver.ext.generic.model.GenericTableBase;
+import org.jkiss.dbeaver.ext.generic.model.GenericUniqueKey;
+import org.jkiss.dbeaver.model.struct.DBSEntityConstraintType;
 
 /**
  * @author Chao Tian
  */
-public class GBase8sConstraintManager extends GenericPrimaryKeyManager {
+public class GBase8sUniqueKey extends GenericUniqueKey {
 
-    @Override
-    protected boolean isLegacyConstraintsSyntax(GenericTableBase owner) {
-        return false;
+    public GBase8sUniqueKey(GenericTableBase table, String name, @Nullable String remarks, DBSEntityConstraintType constraintType, boolean persisted) {
+        super(table, name, remarks, constraintType, persisted);
     }
 
-    @Override
-    protected boolean isShortNotation(GenericTableBase owner) {
-        return false;
-    }
 }
