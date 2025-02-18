@@ -44,7 +44,7 @@
 						<id>default-cli</id>
 						<configuration>
 							<artifacts>
-								<artifact><id>com.github.jsqlparser:jsqlparser:4.5</id></artifact>
+								<artifact><id>com.github.jsqlparser:jsqlparser:5.1</id></artifact>
 <!--								<artifact><id>com.manticore-projects.jsqlformatter:jsqlformatter:0.1.7</id></artifact>-->
 
 								<artifact><id>org.apache.commons:commons-jexl3:3.1</id></artifact>
@@ -96,6 +96,8 @@
 								<artifact><id>org.jkiss.bundle:org.jkiss.bundle.jetty.websocket:LATEST</id><transitive>false</transitive><source>false</source><override>false</override></artifact> <!-- repo:eclipse-bundle-jetty-websocket -->
 								<artifact><id>org.jkiss.bundle:org.jkiss.bundle.jakarta.jetty.server:LATEST</id><transitive>false</transitive><source>false</source><override>false</override></artifact> <!-- repo:eclipse-bundle-jakarta-jetty-server -->
 								<artifact><id>org.jkiss.bundle:org.jkiss.bundle.jakarta.jetty.websocket:LATEST</id><transitive>false</transitive><source>false</source><override>false</override></artifact> <!-- repo:eclipse-bundle-jakarta-jetty-websocket -->
+								<artifact><id>org.jkiss.bundle:org.jkiss.bundle.jakarta.jetty11.websocket:LATEST</id><transitive>false</transitive><source>false</source><override>false</override></artifact> <!-- repo:eclipse-bundle-jakarta-jetty11-websocket -->
+
 								<!-- OkHttp -->
 								<artifact><id>org.jkiss.bundle:org.jkiss.bundle.okhttp:LATEST</id><transitive>false</transitive><source>false</source><override>false</override></artifact>
 								<!-- repo:eclipse-bundle-okhttp -->
