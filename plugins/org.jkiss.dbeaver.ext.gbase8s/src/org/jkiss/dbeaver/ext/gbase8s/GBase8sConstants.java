@@ -29,6 +29,33 @@ public class GBase8sConstants {
     public static final String SQL_TABLE_COMMENT = "COMMENT ON TABLE %s IS %s";
 
     //////////////////////////////////////////////////////
+    // Types
+
+    public static final String TYPE_BIGINT = "bigint";
+    public static final String TYPE_BIGSERIAL = "bigserial";
+    public static final String TYPE_CHAR = "char";
+    public static final String TYPE_CHARACTER = "character";
+    public static final String TYPE_DECIMAL = "decimal";
+    public static final String TYPE_INT = "int";
+    public static final String TYPE_INT8 = "int8";
+    public static final String TYPE_INTEGER = "integer";
+    public static final String TYPE_LVARCHAR = "lvarchar";
+    public static final String TYPE_MONEY = "money";
+    public static final String TYPE_NCHAR = "nchar";
+    public static final String TYPE_NUMERIC = "numeric";
+    public static final String TYPE_REAL = "real";
+    public static final String TYPE_SERIAL = "serial";
+    public static final String TYPE_SERIAL8 = "serial8";
+    public static final String TYPE_SMALLFLOAT = "smallfloat";
+    public static final String TYPE_SMALLINT = "smallint";
+
+    public static final int DEFAULT_LVARCHAR_PRECISION  = 2048;
+    public static final int DEFAULT_NUMERIC_SCALE = 255;
+    public static final int MAX_NUMERIC_PRECISION = 32;
+    public static final int MAX_CHAR_PRECISION = 32767;
+    public static final int MAX_LVARCHAR_PRECISION = 32739;
+
+    //////////////////////////////////////////////////////
     // Constraints
 
     public static final String CONSTRAINT_TYPE = "CONSTRAINT_TYPE";
