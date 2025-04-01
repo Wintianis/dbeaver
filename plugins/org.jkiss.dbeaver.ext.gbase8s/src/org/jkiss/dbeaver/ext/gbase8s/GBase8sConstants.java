@@ -42,18 +42,28 @@ public class GBase8sConstants {
     public static final String TYPE_LVARCHAR = "lvarchar";
     public static final String TYPE_MONEY = "money";
     public static final String TYPE_NCHAR = "nchar";
+    public static final String TYPE_NVARCHAR = "nvarchar";
+    public static final String TYPE_NVARCHAR2 = "nvarchar2";
     public static final String TYPE_NUMERIC = "numeric";
     public static final String TYPE_REAL = "real";
     public static final String TYPE_SERIAL = "serial";
     public static final String TYPE_SERIAL8 = "serial8";
     public static final String TYPE_SMALLFLOAT = "smallfloat";
     public static final String TYPE_SMALLINT = "smallint";
+    public static final String TYPE_VARCHAR = "varchar";
+    public static final String TYPE_VARCHAR2 = "varchar2";
 
-    public static final int DEFAULT_LVARCHAR_PRECISION  = 2048;
+    public static final int DEFAULT_LVARCHAR_LENGTH = 2048;
+    public static final int MAX_LVARCHAR_LENGTH = 32739;
+
     public static final int DEFAULT_NUMERIC_SCALE = 255;
     public static final int MAX_NUMERIC_PRECISION = 32;
-    public static final int MAX_CHAR_PRECISION = 32767;
-    public static final int MAX_LVARCHAR_PRECISION = 32739;
+
+    public static final int DEFAULT_CHAR_LENGTH = 1;
+    public static final int MAX_CHAR_LENGTH = 32767;
+
+    public static final int DEFAULT_VARCHAR_LENGTH = 1;
+    public static final int MAX_VARCHAR_LENGTH = 32765;
 
     //////////////////////////////////////////////////////
     // Constraints

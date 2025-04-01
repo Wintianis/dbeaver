@@ -39,13 +39,14 @@ public class GBase8sSQLDialect extends GenericSQLDialect {
             @NotNull DBSTypedObject column,
             @NotNull String typeName,
             @NotNull DBPDataKind dataKind) {
+        long maxLength = column.getMaxLength();
         if (dataKind == DBPDataKind.NUMERIC) {
             if (isNumericType(typeName)) {
                 // The precision for NUMERIC/DECIMAL/MONEY types ranges from 1 to 32, with a default of 16.
                 // The precision for money types ranges from 2 to 32, also with a default of 16.
                 // The scale ranges from 0 to p (precision) and can only be specified when precision is defined.
                 // By default, the scale is set to null.
-                int precision = (int) column.getMaxLength();
+                int precision = (int) maxLength;
                 if (precision < 0) {
                     precision = 0;
                 } else if (precision > GBase8sConstants.MAX_NUMERIC_PRECISION) {
@@ -69,41 +70,36 @@ public class GBase8sSQLDialect extends GenericSQLDialect {
                 }
                 return null;
             }
-            // The size for BIGSERIAL, SERIAL, and SERIAL8 types starts at 1, with a default value of 1.
+            // The size for BIGSERIAL, SERIAL, and SERIAL8 types starts at 1, with a default value of 1
             else if (isSerialType(typeName)) {
-                long size = column.getMaxLength();
-                if (size < 0) {
-                    size = 0;
+                if (maxLength < 0) {
+                    maxLength = 0;
                 }
-                return (size > 0) ? "(" + size + ")" : null;
+                return (maxLength > 0) ? "(" + maxLength + ")" : null;
             }
         }
-        // The length for CHAR, CHARACTER, and NCHAR types ranges from 1 to 32,767, with a default value of 1.
+        // The length for CHAR, CHARACTER, and NCHAR types ranges from 1 to 32,767, with a default value of 1
         else if (isFixedCharacterType(typeName)) {
-            int length = (int) column.getMaxLength();
-            if (length <= 0) {
-                return null;
-            } else if (length > GBase8sConstants.MAX_CHAR_PRECISION) {
-                length = GBase8sConstants.MAX_CHAR_PRECISION;
-            }
-            return "(" + length + ")";
+            return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_CHAR_LENGTH,
+                    GBase8sConstants.MAX_CHAR_LENGTH);
         }
-        // The length for lvarchar/character/nchar types ranges from 1 to 32739, with a default of 2048.
+        // The length for LVARCHAR types ranges from 1 to 32739, with a default of 2048
+        else if (GBase8sConstants.TYPE_LVARCHAR.equalsIgnoreCase(typeName.trim())) {
+            return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_LVARCHAR_LENGTH,
+                    GBase8sConstants.MAX_LVARCHAR_LENGTH);
+        }
+        // The length for NVARCHAR, NVARCHAR2, VARCHAR, and VARCHAR2 types ranges from 1 to 32765, with a default value
+        // of 1
         else if (isVariableCharacterType(typeName)) {
-            int length = (int) column.getMaxLength();
-            if (length <= 0 || length == GBase8sConstants.DEFAULT_LVARCHAR_PRECISION) {
-                return null;
-            } else if (length > GBase8sConstants.MAX_LVARCHAR_PRECISION) {
-                length = GBase8sConstants.MAX_LVARCHAR_PRECISION;
-            }
-            return "(" + length + ")";
+            return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_VARCHAR_LENGTH,
+                    GBase8sConstants.MAX_VARCHAR_LENGTH);
         }
-        // The type INT is equivalent to INTEGER.
+        // The type INT is equivalent to INTEGER
         else if (GBase8sConstants.TYPE_INT.equalsIgnoreCase(typeName.trim())) {
             typeName = GBase8sConstants.TYPE_INTEGER;
             dataKind = DBPDataKind.NUMERIC;
         }
-        // The type REAL ignores length.
+        // The type REAL ignores length
         else if (GBase8sConstants.TYPE_REAL.equalsIgnoreCase(typeName.trim())) {
             return null;
         }
@@ -133,8 +129,18 @@ public class GBase8sSQLDialect extends GenericSQLDialect {
 
     private boolean isVariableCharacterType(String typeName) {
         String type = typeName.trim();
-        return GBase8sConstants.TYPE_LVARCHAR.equalsIgnoreCase(type)
-                || GBase8sConstants.TYPE_CHARACTER.equalsIgnoreCase(type)
-                || GBase8sConstants.TYPE_NCHAR.equalsIgnoreCase(type);
+        return GBase8sConstants.TYPE_NVARCHAR.equalsIgnoreCase(type)
+                || GBase8sConstants.TYPE_NVARCHAR2.equalsIgnoreCase(type)
+                || GBase8sConstants.TYPE_VARCHAR.equalsIgnoreCase(type)
+                || GBase8sConstants.TYPE_VARCHAR2.equalsIgnoreCase(type);
+    }
+
+    private String getLengthString(String typeName, long maxLength, int defaultLength, int maxAllowedLength) {
+        if (maxLength <= 0 || maxLength == defaultLength) {
+            return null;
+        } else if (maxLength > maxAllowedLength) {
+            maxLength = maxAllowedLength;
+        }
+        return "(" + maxLength + ")";
     }
 }
