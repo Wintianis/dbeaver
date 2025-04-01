@@ -33,6 +33,7 @@ public class GBase8sConstants {
 
     public static final String TYPE_BIGINT = "bigint";
     public static final String TYPE_BIGSERIAL = "bigserial";
+    public static final String TYPE_BOOLEAN = "boolean";
     public static final String TYPE_CHAR = "char";
     public static final String TYPE_CHARACTER = "character";
     public static final String TYPE_DECIMAL = "decimal";

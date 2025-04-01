@@ -163,12 +163,9 @@ public class GBase8sMetaModel extends GenericMetaModel {
         else if (isDecimalWithDefaultScale(typeName, scale)) {
             scale = null;
         }
-        // Handle the special case for the LVARCHAR type with a default length of 2048
-        else if (isLvarcharWithDefaultColumnSize(typeName, columnSize)) {
-            columnSize = 0;
-        }
-        // Handle special cases for variable character types with a default length of 1
-        else if (isVariableCharacterWithDefaultColumnSize(typeName, columnSize)) {
+        // Ignore default length for LVARCHAR, variable character types, and boolean types
+        else if (isLvarcharWithDefaultColumnSize(typeName, columnSize)
+                || isVariableCharacterWithDefaultColumnSize(typeName, columnSize) || isBooleanType(typeName)) {
             columnSize = 0;
         }
         return new GBase8sTableColumn(table, columnName, typeName, valueType, sourceType, ordinalPos, columnSize,
@@ -199,6 +196,10 @@ public class GBase8sMetaModel extends GenericMetaModel {
                 && columnSize == GBase8sConstants.DEFAULT_VARCHAR_LENGTH;
     }
 
+    private boolean isBooleanType(String typeName) {
+        return GBase8sConstants.TYPE_BOOLEAN.equalsIgnoreCase(typeName);
+    }
+    
     private boolean isDecimalWithDefaultScale(String typeName, Integer scale) {
         return GBase8sConstants.TYPE_DECIMAL.equalsIgnoreCase(typeName) && Integer.valueOf(255).equals(scale);
     }
