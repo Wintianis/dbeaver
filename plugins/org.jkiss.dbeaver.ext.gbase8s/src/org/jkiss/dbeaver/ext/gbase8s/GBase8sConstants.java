@@ -54,16 +54,13 @@ public class GBase8sConstants {
     public static final String TYPE_VARCHAR = "varchar";
     public static final String TYPE_VARCHAR2 = "varchar2";
 
-    public static final int DEFAULT_LVARCHAR_LENGTH = 2048;
-    public static final int MAX_LVARCHAR_LENGTH = 32739;
-
-    public static final int DEFAULT_NUMERIC_SCALE = 255;
-    public static final int MAX_NUMERIC_PRECISION = 32;
-
     public static final int DEFAULT_CHAR_LENGTH = 1;
-    public static final int MAX_CHAR_LENGTH = 32767;
+    public static final int DEFAULT_LVARCHAR_LENGTH = 2048;
+    public static final int DEFAULT_NUMERIC_SCALE = 255;
 
-    public static final int DEFAULT_VARCHAR_LENGTH = 1;
+    public static final int MAX_CHAR_LENGTH = 32767;
+    public static final int MAX_LVARCHAR_LENGTH = 32739;
+    public static final int MAX_NUMERIC_PRECISION = 32;
     public static final int MAX_VARCHAR_LENGTH = 32765;
 
     //////////////////////////////////////////////////////

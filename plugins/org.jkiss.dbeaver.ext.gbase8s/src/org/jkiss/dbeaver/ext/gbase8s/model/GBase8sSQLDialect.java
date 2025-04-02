@@ -91,7 +91,7 @@ public class GBase8sSQLDialect extends GenericSQLDialect {
         // The length for NVARCHAR, NVARCHAR2, VARCHAR, and VARCHAR2 types ranges from 1 to 32765, with a default value
         // of 1
         else if (isVariableCharacterType(typeName)) {
-            return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_VARCHAR_LENGTH,
+            return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_CHAR_LENGTH,
                     GBase8sConstants.MAX_VARCHAR_LENGTH);
         }
         // The type INT is equivalent to INTEGER

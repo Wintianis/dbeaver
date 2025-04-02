@@ -193,7 +193,7 @@ public class GBase8sMetaModel extends GenericMetaModel {
                 || GBase8sConstants.TYPE_NVARCHAR2.equalsIgnoreCase(typeName)
                 || GBase8sConstants.TYPE_VARCHAR.equalsIgnoreCase(typeName)
                 || GBase8sConstants.TYPE_VARCHAR2.equalsIgnoreCase(typeName))
-                && columnSize == GBase8sConstants.DEFAULT_VARCHAR_LENGTH;
+                && columnSize == GBase8sConstants.DEFAULT_CHAR_LENGTH;
     }
 
     private boolean isBooleanType(String typeName) {
