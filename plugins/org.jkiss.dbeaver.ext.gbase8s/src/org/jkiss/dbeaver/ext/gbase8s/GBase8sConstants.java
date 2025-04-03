@@ -29,7 +29,17 @@ public class GBase8sConstants {
     public static final String SQL_TABLE_COMMENT = "COMMENT ON TABLE %s IS %s";
 
     //////////////////////////////////////////////////////
-    /// Types
+    /// Constraints
+
+    public static final String CONSTRAINT_TYPE = "CONSTRAINT_TYPE";
+    public static final String CONSTRAINT_TYPE_PRIMARY_KEY = "P";
+    public static final String CONSTRAINT_TYPE_UNIQUE_KEY = "U";
+    public static final String CONSTRAINT_TYPE_CHECK = "C";
+
+    public static final String CHECK_CLAUSE = "CHECK_TEXT";
+
+    //////////////////////////////////////////////////////
+    /// Data Types
 
     public static final String TYPE_BIGINT = "bigint";
     public static final String TYPE_BIGSERIAL = "bigserial";
@@ -120,14 +130,4 @@ public class GBase8sConstants {
     public static final int MAX_LVARCHAR_LENGTH = 32739;
     public static final int MAX_NUMERIC_PRECISION = 32;
     public static final int MAX_VARCHAR_LENGTH = 32765;
-
-    //////////////////////////////////////////////////////
-    /// Constraints
-
-    public static final String CONSTRAINT_TYPE = "CONSTRAINT_TYPE";
-    public static final String CONSTRAINT_TYPE_PRIMARY_KEY = "P";
-    public static final String CONSTRAINT_TYPE_UNIQUE_KEY = "U";
-    public static final String CONSTRAINT_TYPE_CHECK = "C";
-
-    public static final String CHECK_CLAUSE = "CHECK_TEXT";
 }
