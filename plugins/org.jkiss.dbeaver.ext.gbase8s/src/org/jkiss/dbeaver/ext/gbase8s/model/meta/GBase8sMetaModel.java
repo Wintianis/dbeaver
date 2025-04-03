@@ -204,9 +204,9 @@ public class GBase8sMetaModel extends GenericMetaModel {
         return GBase8sConstants.TYPE_DECIMAL.equalsIgnoreCase(typeName) && Integer.valueOf(255).equals(scale);
     }
 
-    /**
-     * Table Trigger
-     */
+    //////////////////////////////////////////////////////
+    /// Table Triggers
+
     @Override
     public GenericTableTrigger createTableTriggerImpl(@NotNull JDBCSession session,
             @NotNull GenericStructContainer container, @NotNull GenericTableBase genericTableBase, String triggerName,
@@ -246,7 +246,7 @@ public class GBase8sMetaModel extends GenericMetaModel {
     }
 
     //////////////////////////////////////////////////////
-    // Constraints
+    /// Constraints
 
     public JDBCStatement prepareUniqueConstraintsLoadStatement(
             @NotNull JDBCSession session,
@@ -339,6 +339,9 @@ public class GBase8sMetaModel extends GenericMetaModel {
     public boolean supportsCheckConstraints() {
         return true;
     }
+
+    //////////////////////////////////////////////////////
+    /// Procedures
 
     @Override
     public void loadProcedures(DBRProgressMonitor monitor, @NotNull GenericObjectContainer container)

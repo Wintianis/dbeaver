@@ -88,8 +88,8 @@ public class GBase8sSQLDialect extends GenericSQLDialect {
             return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_LVARCHAR_LENGTH,
                     GBase8sConstants.MAX_LVARCHAR_LENGTH);
         }
-        // The length for NVARCHAR, NVARCHAR2, VARCHAR, and VARCHAR2 types ranges from 1 to 32765, with a default value
-        // of 1
+        // The length for CHARACTER VARYING, NVARCHAR, NVARCHAR2, VARCHAR, and VARCHAR2 types ranges from 1 to 32765,
+        // with a default value of 1
         else if (isVariableCharacterType(typeName)) {
             return getLengthString(typeName, maxLength, GBase8sConstants.DEFAULT_CHAR_LENGTH,
                     GBase8sConstants.MAX_VARCHAR_LENGTH);
@@ -129,7 +129,8 @@ public class GBase8sSQLDialect extends GenericSQLDialect {
 
     private boolean isVariableCharacterType(String typeName) {
         String type = typeName.trim();
-        return GBase8sConstants.TYPE_NVARCHAR.equalsIgnoreCase(type)
+        return GBase8sConstants.TYPE_CHARACTER_VARYING.equalsIgnoreCase(type)
+                || GBase8sConstants.TYPE_NVARCHAR.equalsIgnoreCase(type)
                 || GBase8sConstants.TYPE_NVARCHAR2.equalsIgnoreCase(type)
                 || GBase8sConstants.TYPE_VARCHAR.equalsIgnoreCase(type)
                 || GBase8sConstants.TYPE_VARCHAR2.equalsIgnoreCase(type);

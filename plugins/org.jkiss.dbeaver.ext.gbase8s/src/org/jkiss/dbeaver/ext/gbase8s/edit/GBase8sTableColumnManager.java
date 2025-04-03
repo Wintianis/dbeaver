@@ -22,10 +22,13 @@ import java.util.Map;
 
 import org.jkiss.code.NotNull;
 import org.jkiss.dbeaver.DBException;
+import org.jkiss.dbeaver.ext.gbase8s.model.GBase8sDateTimeDomain;
 import org.jkiss.dbeaver.ext.generic.edit.GenericTableColumnManager;
 import org.jkiss.dbeaver.ext.generic.model.GenericTableBase;
 import org.jkiss.dbeaver.ext.generic.model.GenericTableColumn;
 import org.jkiss.dbeaver.model.DBConstants;
+import org.jkiss.dbeaver.model.DBPDataKind;
+import org.jkiss.dbeaver.model.DBPDataTypeProvider;
 import org.jkiss.dbeaver.model.DBPEvaluationContext;
 import org.jkiss.dbeaver.model.DBUtils;
 import org.jkiss.dbeaver.model.edit.DBECommandContext;
@@ -35,6 +38,9 @@ import org.jkiss.dbeaver.model.exec.DBCExecutionContext;
 import org.jkiss.dbeaver.model.impl.edit.SQLDatabasePersistAction;
 import org.jkiss.dbeaver.model.impl.sql.edit.SQLObjectEditor;
 import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
+import org.jkiss.dbeaver.model.sql.SQLUtils;
+import org.jkiss.dbeaver.model.struct.DBSDataType;
+import org.jkiss.dbeaver.model.struct.DBSObject;
 import org.jkiss.utils.CommonUtils;
 
 /**
@@ -42,6 +48,47 @@ import org.jkiss.utils.CommonUtils;
  */
 public class GBase8sTableColumnManager extends GenericTableColumnManager
         implements DBEObjectRenamer<GenericTableColumn> {
+
+    protected final ColumnModifier<GenericTableColumn> DataTypeModifier = (monitor, column, sql, command) -> {
+        final String typeName = column.getTypeName();
+        final DBPDataKind dataKind = column.getDataKind();
+        final DBSDataType dataType = findDataType(column, typeName);
+        if (dataType == null) {
+            if (DBPDataKind.STRING.equals(dataKind) && GBase8sDateTimeDomain.getIdByDefinition(typeName) != 0) {
+                sql.append(' ').append(typeName);
+            } else if (DBPDataKind.DATETIME.equals(dataKind)) {
+                long maxLength = column.getMaxLength();
+                String def = GBase8sDateTimeDomain.getDefinitionById((int) maxLength);
+                if (def != null) {
+                    sql.append(' ').append(def);
+                } else {
+                    log.debug("Unrecognized DATETIME type with maxLength: " + maxLength);
+                    sql.append(' ').append(GBase8sDateTimeDomain.YEAR_TO_FRACTION_5.getDefinition());
+                }
+            } else {
+                log.debug("Type name '" + typeName + "' is not supported by driver");
+            }
+        } else {
+            sql.append(' ').append(typeName);
+            String modifiers = SQLUtils.getColumnTypeModifiers(column.getDataSource(), column, typeName, dataKind);
+            if (modifiers != null) {
+                sql.append(modifiers);
+            }
+        }
+    };
+
+    @Override
+    protected ColumnModifier[] getSupportedModifiers(GenericTableColumn column, Map<String, Object> options) {
+        return new ColumnModifier[] { DataTypeModifier, DefaultModifier, NotNullModifier };
+    }
+
+    private static DBSDataType findDataType(DBSObject object, String typeName) {
+        DBPDataTypeProvider dataTypeProvider = DBUtils.getParentOfType(DBPDataTypeProvider.class, object);
+        if (dataTypeProvider != null) {
+            return dataTypeProvider.getLocalDataType(typeName);
+        }
+        return null;
+    }
 
     @Override
     protected void addObjectCreateActions(

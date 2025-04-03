@@ -29,13 +29,14 @@ public class GBase8sConstants {
     public static final String SQL_TABLE_COMMENT = "COMMENT ON TABLE %s IS %s";
 
     //////////////////////////////////////////////////////
-    // Types
+    /// Types
 
     public static final String TYPE_BIGINT = "bigint";
     public static final String TYPE_BIGSERIAL = "bigserial";
     public static final String TYPE_BOOLEAN = "boolean";
     public static final String TYPE_CHAR = "char";
     public static final String TYPE_CHARACTER = "character";
+    public static final String TYPE_CHARACTER_VARYING = "character varying";
     public static final String TYPE_DECIMAL = "decimal";
     public static final String TYPE_INT = "int";
     public static final String TYPE_INT8 = "int8";
@@ -54,6 +55,63 @@ public class GBase8sConstants {
     public static final String TYPE_VARCHAR = "varchar";
     public static final String TYPE_VARCHAR2 = "varchar2";
 
+    public static final String TYPE_YEAR_TO_YEAR = "DATETIME YEAR TO YEAR";
+    public static final String TYPE_YEAR_TO_MONTH = "DATETIME YEAR TO MONTH";
+    public static final String TYPE_YEAR_TO_DAY = "DATETIME YEAR TO DAY";
+    public static final String TYPE_YEAR_TO_HOUR = "DATETIME YEAR TO HOUR";
+    public static final String TYPE_YEAR_TO_MINUTE = "DATETIME YEAR TO MINUTE";
+    public static final String TYPE_YEAR_TO_SECOND = "DATETIME YEAR TO SECOND";
+    public static final String TYPE_YEAR_TO_FRACTION_1 = "DATETIME YEAR TO FRACTION(1)";
+    public static final String TYPE_YEAR_TO_FRACTION_2 = "DATETIME YEAR TO FRACTION(2)";
+    public static final String TYPE_YEAR_TO_FRACTION_3 = "DATETIME YEAR TO FRACTION(3)";
+    public static final String TYPE_YEAR_TO_FRACTION_4 = "DATETIME YEAR TO FRACTION(4)";
+    public static final String TYPE_YEAR_TO_FRACTION_5 = "DATETIME YEAR TO FRACTION(5)";
+
+    public static final String TYPE_MONTH_TO_MONTH = "DATETIME MONTH TO MONTH";
+    public static final String TYPE_MONTH_TO_DAY = "DATETIME MONTH TO DAY";
+    public static final String TYPE_MONTH_TO_HOUR = "DATETIME MONTH TO HOUR";
+    public static final String TYPE_MONTH_TO_MINUTE = "DATETIME MONTH TO MINUTE";
+    public static final String TYPE_MONTH_TO_SECOND = "DATETIME MONTH TO SECOND";
+    public static final String TYPE_MONTH_TO_FRACTION_1 = "DATETIME MONTH TO FRACTION(1)";
+    public static final String TYPE_MONTH_TO_FRACTION_2 = "DATETIME MONTH TO FRACTION(2)";
+    public static final String TYPE_MONTH_TO_FRACTION_3 = "DATETIME MONTH TO FRACTION(3)";
+    public static final String TYPE_MONTH_TO_FRACTION_4 = "DATETIME MONTH TO FRACTION(4)";
+    public static final String TYPE_MONTH_TO_FRACTION_5 = "DATETIME MONTH TO FRACTION(5)";
+
+    public static final String TYPE_DAY_TO_DAY = "DATETIME DAY TO DAY";
+    public static final String TYPE_DAY_TO_HOUR = "DATETIME DAY TO HOUR";
+    public static final String TYPE_DAY_TO_MINUTE = "DATETIME DAY TO MINUTE";
+    public static final String TYPE_DAY_TO_SECOND = "DATETIME DAY TO SECOND";
+    public static final String TYPE_DAY_TO_FRACTION_1 = "DATETIME DAY TO FRACTION(1)";
+    public static final String TYPE_DAY_TO_FRACTION_2 = "DATETIME DAY TO FRACTION(2)";
+    public static final String TYPE_DAY_TO_FRACTION_3 = "DATETIME DAY TO FRACTION(3)";
+    public static final String TYPE_DAY_TO_FRACTION_4 = "DATETIME DAY TO FRACTION(4)";
+    public static final String TYPE_DAY_TO_FRACTION_5 = "DATETIME DAY TO FRACTION(5)";
+
+    public static final String TYPE_HOUR_TO_HOUR = "DATETIME HOUR TO HOUR";
+    public static final String TYPE_HOUR_TO_MINUTE = "DATETIME HOUR TO MINUTE";
+    public static final String TYPE_HOUR_TO_SECOND = "DATETIME HOUR TO SECOND";
+    public static final String TYPE_HOUR_TO_FRACTION_1 = "DATETIME HOUR TO FRACTION(1)";
+    public static final String TYPE_HOUR_TO_FRACTION_2 = "DATETIME HOUR TO FRACTION(2)";
+    public static final String TYPE_HOUR_TO_FRACTION_3 = "DATETIME HOUR TO FRACTION(3)";
+    public static final String TYPE_HOUR_TO_FRACTION_4 = "DATETIME HOUR TO FRACTION(4)";
+    public static final String TYPE_HOUR_TO_FRACTION_5 = "DATETIME HOUR TO FRACTION(5)";
+
+    public static final String TYPE_MINUTE_TO_MINUTE = "DATETIME MINUTE TO MINUTE";
+    public static final String TYPE_MINUTE_TO_SECOND = "DATETIME MINUTE TO SECOND";
+    public static final String TYPE_MINUTE_TO_FRACTION_1 = "DATETIME MINUTE TO FRACTION(1)";
+    public static final String TYPE_MINUTE_TO_FRACTION_2 = "DATETIME MINUTE TO FRACTION(2)";
+    public static final String TYPE_MINUTE_TO_FRACTION_3 = "DATETIME MINUTE TO FRACTION(3)";
+    public static final String TYPE_MINUTE_TO_FRACTION_4 = "DATETIME MINUTE TO FRACTION(4)";
+    public static final String TYPE_MINUTE_TO_FRACTION_5 = "DATETIME MINUTE TO FRACTION(5)";
+
+    public static final String TYPE_SECOND_TO_SECOND = "DATETIME SECOND TO SECOND";
+    public static final String TYPE_SECOND_TO_FRACTION_1 = "DATETIME SECOND TO FRACTION(1)";
+    public static final String TYPE_SECOND_TO_FRACTION_2 = "DATETIME SECOND TO FRACTION(2)";
+    public static final String TYPE_SECOND_TO_FRACTION_3 = "DATETIME SECOND TO FRACTION(3)";
+    public static final String TYPE_SECOND_TO_FRACTION_4 = "DATETIME SECOND TO FRACTION(4)";
+    public static final String TYPE_SECOND_TO_FRACTION_5 = "DATETIME SECOND TO FRACTION(5)";
+
     public static final int DEFAULT_CHAR_LENGTH = 1;
     public static final int DEFAULT_LVARCHAR_LENGTH = 2048;
     public static final int DEFAULT_NUMERIC_SCALE = 255;
@@ -64,7 +122,7 @@ public class GBase8sConstants {
     public static final int MAX_VARCHAR_LENGTH = 32765;
 
     //////////////////////////////////////////////////////
-    // Constraints
+    /// Constraints
 
     public static final String CONSTRAINT_TYPE = "CONSTRAINT_TYPE";
     public static final String CONSTRAINT_TYPE_PRIMARY_KEY = "P";
