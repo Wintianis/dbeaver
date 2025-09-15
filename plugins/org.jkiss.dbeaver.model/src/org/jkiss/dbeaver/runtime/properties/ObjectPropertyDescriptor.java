@@ -20,6 +20,7 @@ import org.jkiss.code.NotNull;
 import org.jkiss.code.Nullable;
 import org.jkiss.dbeaver.DBException;
 import org.jkiss.dbeaver.model.DBConstants;
+import org.jkiss.dbeaver.model.DBPConditionalProperty;
 import org.jkiss.dbeaver.model.DBPPersistedObject;
 import org.jkiss.dbeaver.model.dpi.DPIClientObject;
 import org.jkiss.dbeaver.model.exec.DBExecUtils;
@@ -54,7 +55,8 @@ import java.util.stream.Collectors;
 /**
  * ObjectPropertyDescriptor
 */
-public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implements DBPPropertyDescriptor, IPropertyValueListProvider<Object>
+public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor
+    implements DBPPropertyDescriptor, DBPConditionalProperty, IPropertyValueListProvider<Object>
 {
 
     private final Property propInfo;
@@ -138,7 +140,7 @@ public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implemen
                 getLocalizedString(propInfo.name(), Property.RESOURCE_TYPE_DESCRIPTION, propName, false, locale);
         this.propHint = CommonUtils.isEmpty(propInfo.hint()) ?
             null :
-            getLocalizedString(propInfo.name(), Property.RESOURCE_TYPE_HINT, propName, false, locale);
+            getLocalizedString(propInfo.name(), Property.RESOURCE_TYPE_HINT, null, false, locale);
     }
 
     @Override
@@ -160,6 +162,10 @@ public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implemen
     public boolean isExpensive()
     {
         return propInfo.expensive();
+    }
+
+    public boolean isInfo() {
+        return propInfo.info();
     }
 
     public boolean isNumeric() {
@@ -279,6 +285,12 @@ public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implemen
         return features.toArray(new String[0]);
     }
 
+    @Nullable
+    @Override
+    public String[] getRequiredFeatures() {
+        return propInfo.requiredFeatures();
+    }
+
     @Override
     public boolean hasFeature(@NotNull String feature) {
 
@@ -315,6 +327,8 @@ public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implemen
                 return this.isPassword();
             case DBConstants.PROP_FEATURE_NON_SECURED:
                 return this.isNonSecuredProperty();
+            case DBConstants.PROP_FEATURE_INFO:
+                return this.isInfo();
         }
 
         return ArrayUtils.contains(propInfo.features(), feature);
@@ -377,7 +391,7 @@ public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implemen
     @Override
     public String getDisplayName()
     {
-        if (labelProvider != null) {
+        if (labelProvider != null && getSource() != null) {
             Object editableValue = getSource().getEditableValue();
             if (editableValue == null) {
                 if (getSource() instanceof DBNNodeReference nodeReference &&
@@ -687,6 +701,18 @@ public class ObjectPropertyDescriptor extends ObjectAttributeDescriptor implemen
         // Copied from ResourceTranslator.getResourceBundle
 //        Locale locale = (language == null) ? Locale.getDefault() : new Locale(language);
 //        return ResourceBundle.getBundle("plugin", locale, ownerClass.getClassLoader()); //$NON-NLS-1$
+    }
+
+    @Nullable
+    @Override
+    public String getHideExpression() {
+        return CommonUtils.nullIfEmpty(propInfo.hideExpr());
+    }
+
+    @Nullable
+    @Override
+    public String getReadOnlyExpression() {
+        return CommonUtils.nullIfEmpty(propInfo.readOnlyExpr());
     }
 
 }

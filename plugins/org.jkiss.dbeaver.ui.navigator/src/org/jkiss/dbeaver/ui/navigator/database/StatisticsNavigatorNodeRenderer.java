@@ -40,6 +40,8 @@ import org.jkiss.dbeaver.model.navigator.*;
 import org.jkiss.dbeaver.model.preferences.DBPPreferenceStore;
 import org.jkiss.dbeaver.model.runtime.AbstractJob;
 import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
+import org.jkiss.dbeaver.model.runtime.LocalCacheProgressMonitor;
+import org.jkiss.dbeaver.model.runtime.VoidProgressMonitor;
 import org.jkiss.dbeaver.model.struct.DBSObject;
 import org.jkiss.dbeaver.registry.DataSourceUtils;
 import org.jkiss.dbeaver.runtime.DBWorkbench;
@@ -118,6 +120,9 @@ public class StatisticsNavigatorNodeRenderer extends DefaultNavigatorNodeRendere
             if (store.getBoolean(NavigatorPreferences.NAVIGATOR_SHOW_STATISTICS_INFO)) {
                 drawObjectStatistics(gc, databaseNode, item, event);
             }
+            if (node instanceof DBNDatabaseFolder && store.getBoolean(NavigatorPreferences.NAVIGATOR_SHOW_CHILD_COUNT) && !databaseNode.needsInitialization()) {
+                drawObjectChildrenCounter(gc, databaseNode, item);
+            }
             if (node instanceof DBNDatabaseItem && store.getBoolean(NavigatorPreferences.NAVIGATOR_SHOW_OBJECTS_DESCRIPTION)) {
                 drawObjectDescription(gc, databaseNode, item);
             }
@@ -192,6 +197,17 @@ public class StatisticsNavigatorNodeRenderer extends DefaultNavigatorNodeRendere
         }
     }
 
+    private void drawObjectChildrenCounter(@NotNull GC gc, @NotNull DBNDatabaseNode node, @NotNull Rectangle bounds) {
+        int childCount = 0;
+        try {
+            childCount = node.getChildren(new LocalCacheProgressMonitor(new VoidProgressMonitor())).length;
+        } catch (DBException e) {
+            return;
+        }
+        String text = "(" + childCount + ")";
+        drawText(gc, text, bounds);
+    }
+
     private void drawObjectStatistics(@NotNull GC gc, @NotNull DBNDatabaseNode node, @NotNull Rectangle bounds, @NotNull Event event) {
         if (bounds.width < PERCENT_FILL_WIDTH) {
             return;
@@ -252,7 +268,7 @@ public class StatisticsNavigatorNodeRenderer extends DefaultNavigatorNodeRendere
 
         try {
             gc.setForeground(NavigatorThemeSettings.instance.hintColor);
-            gc.setFont(BaseThemeSettings.instance.baseFontItalic);
+            gc.setFont(BaseThemeSettings.instance.treeAndTableFontItalic);
 
             drawTextClipped(gc, text, bounds);
         } finally {

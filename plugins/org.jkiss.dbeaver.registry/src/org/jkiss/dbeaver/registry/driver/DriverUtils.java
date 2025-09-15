@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -250,7 +251,7 @@ public class DriverUtils {
     @NotNull
     public static String getDistributedLibraryPath(@NotNull Path path) {
         if (DBWorkbench.isDistributed() && path.isAbsolute()) {
-            return DriverDescriptor.getWorkspaceDriversStorageFolder().relativize(path).toString();
+            return DriverDescriptor.getExternalDriversStorageFolder().relativize(path).toString();
         }
         return path.toString();
     }
@@ -288,6 +289,20 @@ public class DriverUtils {
             crc.update(buffer, 0, bytesRead);
         }
         return crc.getValue();
+    }
+
+    /**
+     * Builds string of drivers with single connection option
+     */
+    @NotNull
+    public static String collectSingleConnectionDrivers() {
+        return DBWorkbench.getPlatform().getDataSourceProviderRegistry().getDataSourceProviders().stream()
+            .flatMap(pr -> pr.getDrivers().stream())
+            .filter(d -> (d.isSingleConnection() || d.isEmbedded()))
+            .sorted(Comparator.comparing(DBPNamedObject::getName))
+            .map(d -> " - " + d.getName())
+            .distinct()
+            .collect(Collectors.joining("\n"));
     }
 
     public static class DriverNameComparator implements Comparator<DBPDriver> {

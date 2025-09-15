@@ -148,7 +148,7 @@ public class DataSourceDescriptor
     @NotNull
     private final Map<String, String> tags;
     @NotNull
-    private final Map<String, String> extensions;
+    private final Map<String, Object> extensions;
     @Nullable
     private DBPDataSource dataSource;
     @Nullable
@@ -156,7 +156,6 @@ public class DataSourceDescriptor
 
     private boolean temporary;
     private boolean hidden;
-    private boolean template;
     private boolean dpiEnabled;
 
     @NotNull
@@ -172,15 +171,16 @@ public class DataSourceDescriptor
     private volatile boolean disposed = false;
     private volatile boolean connecting = false;
 
+    private transient DBWNetworkHandler proxyHandler;
+    private transient DBWTunnel tunnelHandler;
+
     // secrets resolved from secret controller
     private volatile boolean secretsResolved = false;
     // secrets resolved from secret controller and contains db creds (we may not have db creds in the case when we store only ssh)
     private volatile boolean secretsContainsDatabaseCreds = false;
 
-    private final List<DBRProcessDescriptor> childProcesses = new ArrayList<>();
-    private transient DBWNetworkHandler proxyHandler;
-    private transient DBWTunnel tunnelHandler;
-    private final List<DBPDataSourceTask> users = new ArrayList<>();
+    private transient final List<DBRProcessDescriptor> childProcesses = new ArrayList<>();
+    private transient final List<DBPDataSourceTask> users = new ArrayList<>();
     private transient String clientApplicationName;
     // DPI controller
     private transient DPIProcessController dpiController;
@@ -760,15 +760,6 @@ public class DataSourceDescriptor
     }
 
     @Override
-    public boolean isTemplate() {
-        return template;
-    }
-
-    public void setTemplate(boolean template) {
-        this.template = template;
-    }
-
-    @Override
     public boolean isTemporary() {
         return temporary;
     }
@@ -1295,6 +1286,7 @@ public class DataSourceDescriptor
             return true;
         } catch (Throwable e) {
             terminateChildProcesses();
+            handleConnectError(e);
             lastConnectionError = e.getMessage();
             //log.debug("Connection failed (" + getId() + ")", e);
             if (dataSource != null) {
@@ -1330,6 +1322,10 @@ public class DataSourceDescriptor
         } finally {
             monitor.done();
         }
+    }
+
+    protected void handleConnectError(@NotNull Throwable e) {
+
     }
 
 
@@ -1710,12 +1706,12 @@ public class DataSourceDescriptor
 
     @Nullable
     @Override
-    public String getExtension(@NotNull String name) {
-        return extensions.get(name);
+    public <T> T getExtension(@NotNull String name) {
+        return (T) extensions.get(name);
     }
 
     @Override
-    public void setExtension(@NotNull String name, @Nullable String value) {
+    public void setExtension(@NotNull String name, @Nullable Object value) {
         if (value == null) {
             this.extensions.remove(name);
         } else {
@@ -1724,11 +1720,11 @@ public class DataSourceDescriptor
     }
 
     @NotNull
-    public Map<String, String> getExtensions() {
+    public Map<String, Object> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(Map<String, Object> extensions) {
         this.extensions.clear();
         this.extensions.putAll(extensions);
     }
@@ -1957,10 +1953,16 @@ public class DataSourceDescriptor
         if (!(obj instanceof DataSourceDescriptor source)) {
             return false;
         }
-        return
-            CommonUtils.equalOrEmptyStrings(this.name, source.name) &&
-                CommonUtils.equalOrEmptyStrings(this.description, source.description) &&
-                equalConfiguration(source);
+        return isLooselyEqualTo(source) && equalConfiguration(source) && equalInternalConfiguration(source);
+    }
+
+    public boolean isLooselyEqualTo(DataSourceDescriptor source) {
+        return CommonUtils.equalOrEmptyStrings(this.name, source.name) &&
+            CommonUtils.equalOrEmptyStrings(this.description, source.description);
+    }
+
+    public boolean equalInternalConfiguration(DataSourceDescriptor source) {
+        return CommonUtils.equalObjects(this.extensions, source.extensions);
     }
 
     public boolean equalConfiguration(DataSourceDescriptor source) {
@@ -1980,7 +1982,6 @@ public class DataSourceDescriptor
                 CommonUtils.equalObjects(this.clientHome, source.clientHome) &&
                 CommonUtils.equalObjects(this.lockPasswordHash, source.lockPasswordHash) &&
                 CommonUtils.equalObjects(this.folder, source.folder) &&
-                CommonUtils.equalObjects(this.extensions, source.extensions) &&
                 CommonUtils.equalObjects(this.preferenceStore, source.preferenceStore) &&
                 CommonUtils.equalsContents(this.connectionModifyRestrictions, source.connectionModifyRestrictions);
     }

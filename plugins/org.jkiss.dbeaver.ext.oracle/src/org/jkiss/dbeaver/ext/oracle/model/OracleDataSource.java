@@ -308,7 +308,7 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
 
             try (JDBCSession session = context.openSession(monitor, DBCExecutionPurpose.META, "Set connection parameters")) {
                 try {
-                    readDatabaseServerVersion(session.getMetaData());
+                    readDatabaseServerVersion(session, session.getMetaData());
                 } catch (SQLException e) {
                     log.debug("Error reading metadata", e);
                 }
@@ -369,7 +369,19 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
                             JDBCUtils.executeSQL(session, "ALTER SESSION SET \"_optimizer_push_pred_cost_based\" = FALSE");
                             JDBCUtils.executeSQL(session, "ALTER SESSION SET \"_optimizer_squ_bottomup\" = FALSE");
                             JDBCUtils.executeSQL(session, "ALTER SESSION SET \"_optimizer_cost_based_transformation\" = 'OFF'");
-                            String optimiserVersion = null;
+
+                            String optimizerVersion = connectionInfo.getProviderProperty(OracleConstants.PROP_USE_META_OPTIMIZER_VERSION);
+                            if (CommonUtils.isEmpty(optimizerVersion) && isServerVersionAtLeast(10, 2)) {
+                                optimizerVersion = OracleConstants.OPTIMIZER_VERSION_DEFAULT;
+                            }
+                            if (!CommonUtils.isEmpty(optimizerVersion)) {
+                                JDBCUtils.executeSQL(
+                                    session,
+                                    "ALTER SESSION SET OPTIMIZER_FEATURES_ENABLE='"+ optimizerVersion + "'"
+                                );
+                            }
+
+                            /*String optimiserVersion = null;
                             if (isServerVersionAtLeast(23, 1)) {
                                 optimiserVersion = "23.1.0";
                             } else if (isServerVersionAtLeast(19, 1)) {
@@ -383,7 +395,7 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
                             }
                             if (optimiserVersion != null) {
                                 JDBCUtils.executeSQL(session, "ALTER SESSION SET OPTIMIZER_FEATURES_ENABLE='%s'".formatted(optimiserVersion));
-                            }
+                            }*/
                         } catch (SQLException e) {
                             log.warn("Can't set session optimizer parameters", e);
                         }
@@ -412,18 +424,20 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
 
     @Override
     protected DBPDataSourceInfo createDataSourceInfo(DBRProgressMonitor monitor, @NotNull JDBCDatabaseMetaData metaData) {
-        return new OracleDataSourceInfo(this, metaData);
+        return new OracleDataSourceInfo(metaData);
     }
 
     @Override
     public ErrorType discoverErrorType(@NotNull Throwable error) {
         Throwable rootCause = CommonUtils.getRootCause(error);
-        if (rootCause instanceof SQLException) {
-            switch (((SQLException) rootCause).getErrorCode()) {
+        if (rootCause instanceof SQLException sqlException) {
+            switch (sqlException.getErrorCode()) {
                 case OracleConstants.EC_NO_RESULTSET_AVAILABLE:
                     return ErrorType.RESULT_SET_MISSING;
                 case OracleConstants.EC_FEATURE_NOT_SUPPORTED:
                     return ErrorType.FEATURE_UNSUPPORTED;
+                case OracleConstants.EC_INVALID_USERNAME_PASSWORD:
+                    return ErrorType.AUTHENTICATION_FAILED;
             }
         }
         return super.discoverErrorType(error);
@@ -1170,7 +1184,11 @@ public class OracleDataSource extends JDBCDataSource implements DBPObjectStatist
         return KNOWN_GLOBAL_PSEUDO_ATTRS;
     }
 
-    public boolean supportsUserPasswordEdit() {
+    public boolean supportsUserEdit() {
+        return false;
+    }
+
+    public boolean supportsSchedulerJobEdit() {
         return false;
     }
 }

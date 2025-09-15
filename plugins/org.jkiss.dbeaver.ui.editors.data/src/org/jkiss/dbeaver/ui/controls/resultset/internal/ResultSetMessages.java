@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2025 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  */
 package org.jkiss.dbeaver.ui.controls.resultset.internal;
 
-import org.jkiss.dbeaver.utils.NLS;
+import org.eclipse.osgi.util.NLS;
 
 public class ResultSetMessages extends NLS {
     public static final String BUNDLE_NAME = "org.jkiss.dbeaver.ui.controls.resultset.internal.ResultSetMessages"; //$NON-NLS-1$
@@ -147,11 +147,11 @@ public class ResultSetMessages extends NLS {
     public static String sql_editor_resultset_filter_panel_label;
     public static String sql_editor_resultset_filter_panel_btn_open_console;
     public static String sql_editor_resultset_filter_panel_control_no_data;
-    public static String sql_editor_resultset_filter_panel_control_execute_to_see_reslut;
+    public static String sql_editor_resultset_filter_panel_control_execute_to_see_result;
+    public static String sql_editor_resultset_filter_panel_show_sql_label;
 
     public static String actions_name_color_by;
     public static String actions_name_color_reset_by;
-    public static String actions_name_colorize_data_types;
     public static String actions_name_row_colors;
     public static String actions_name_structurize_complex_types;
     public static String actions_spreadsheet_copy_special;
@@ -198,7 +198,6 @@ public class ResultSetMessages extends NLS {
 
 
     public static String dialog_value_view_job_selector_name;
-    public static String dialog_value_view_label_dictionary;
 
     public static String dialog_filter_value_edit_title;
     public static String dialog_filter_value_edit_label_choose_values;
@@ -344,6 +343,11 @@ public class ResultSetMessages extends NLS {
     public static String pref_page_database_resultsets_label_order_mode_smart;
     public static String pref_page_database_resultsets_label_order_mode_always_client;
     public static String pref_page_database_resultsets_label_order_mode_always_server;
+    public static String pref_page_database_resultsets_label_order_policy;
+    public static String pref_page_database_resultsets_label_order_policy_tip;
+    public static String pref_page_database_resultsets_label_order_policy_default;
+    public static String pref_page_database_resultsets_label_order_policy_primary_key_asc;
+    public static String pref_page_database_resultsets_label_order_policy_primary_key_desc;
     public static String pref_page_database_resultsets_label_fetch_size;
     public static String pref_page_database_resultsets_label_read_metadata;
     public static String pref_page_database_resultsets_label_read_references;

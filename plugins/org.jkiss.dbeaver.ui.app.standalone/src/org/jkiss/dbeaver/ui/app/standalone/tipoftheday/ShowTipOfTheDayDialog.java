@@ -37,42 +37,51 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledFormText;
+import org.jkiss.code.NotNull;
 import org.jkiss.dbeaver.Log;
-import org.jkiss.dbeaver.model.DBIcon;
+import org.jkiss.dbeaver.model.preferences.DBPPreferenceStore;
 import org.jkiss.dbeaver.runtime.DBWorkbench;
 import org.jkiss.dbeaver.ui.ShellUtils;
 import org.jkiss.dbeaver.ui.UIUtils;
-import org.jkiss.dbeaver.ui.dialogs.BaseDialog;
+import org.jkiss.dbeaver.ui.dialogs.AbstractPopupPanel;
+import org.jkiss.utils.CommonUtils;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class ShowTipOfTheDayDialog extends BaseDialog {
+public class ShowTipOfTheDayDialog extends AbstractPopupPanel {
+    private static final String UI_SHOW_TIP_OF_THE_DAY_ON_STARTUP = "ui.show.tip.of.the.day.on.startup";
     private static final Log log = Log.getLog(ShowTipOfTheDayDialog.class);
 
     private static final String DIALOG_ID = "DBeaver." + ShowTipOfTheDayDialog.class.getSimpleName();
 
-    private final List<String> tips = new ArrayList<>();
+    private final List<String> tips;
     private Composite tipArea;
     private boolean displayShowOnStartup;
-    private boolean showOnStartup;
     private ScrolledFormText scrolledFormText;
     private int tipIndex;
 
-    public ShowTipOfTheDayDialog(Shell parentShell) {
-        super(parentShell, "Tip of the day", DBIcon.TREE_INFO);
+    public ShowTipOfTheDayDialog(@NotNull Shell parentShell, @NotNull List<String> tips) {
+        super(parentShell, TipOfTheDayMessages.tip_of_the_day_title);
+        this.tips = List.copyOf(tips);
+        setModeless(true);
+        setBlockOnOpen(false);
+    }
+
+    public static boolean isShowOnStartup() {
+        DBPPreferenceStore store = DBWorkbench.getPlatform().getPreferenceStore();
+        return CommonUtils.toBoolean(store.getString(UI_SHOW_TIP_OF_THE_DAY_ON_STARTUP), true);
+    }
+
+    public static void setShowOnStartup(boolean showOnStartup) {
+        DBPPreferenceStore store = DBWorkbench.getPlatform().getPreferenceStore();
+        store.setValue(UI_SHOW_TIP_OF_THE_DAY_ON_STARTUP, String.valueOf(showOnStartup));
     }
 
     @Override
-    protected IDialogSettings getDialogBoundsSettings()
-    {
+    protected IDialogSettings getDialogBoundsSettings() {
         return UIUtils.getDialogSettings(DIALOG_ID);
-    }
-
-    public void addTip(String tip) {
-        this.tips.add(tip);
     }
 
     @Override
@@ -89,12 +98,7 @@ public class ShowTipOfTheDayDialog extends BaseDialog {
 
     @Override
     protected Composite createDialogArea(Composite parent) {
-        getShell().setText("Tip of the day");
-        setTitle("Tip of the day");
-
-        if (tips.isEmpty()) {
-            tips.add("Empty tip list");
-        }
+        getShell().setText(TipOfTheDayMessages.tip_of_the_day_title);
 
         tipIndex = new Random(System.currentTimeMillis()).nextInt(tips.size());
 
@@ -153,12 +157,13 @@ public class ShowTipOfTheDayDialog extends BaseDialog {
         showTip();
 
         if (displayShowOnStartup) {
-            Button showTipButton = toolkit.createButton(form.getBody(), "Show tips on startup", SWT.CHECK);
-            showTipButton.setSelection(showOnStartup);
+            Button showTipButton = toolkit.createButton(form.getBody(), TipOfTheDayMessages.show_tips_on_startup, SWT.CHECK);
+
+            showTipButton.setSelection(isShowOnStartup());
             showTipButton.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    showOnStartup = showTipButton.getSelection();
+                    setShowOnStartup(showTipButton.getSelection());
                 }
             });
 
@@ -166,6 +171,11 @@ public class ShowTipOfTheDayDialog extends BaseDialog {
         }
 
         return dialogArea;
+    }
+
+    @Override
+    protected boolean needsButtonBar() {
+        return true;
     }
 
     private void navigateLink(HyperlinkEvent e) {
@@ -253,19 +263,7 @@ public class ShowTipOfTheDayDialog extends BaseDialog {
         super.buttonPressed(buttonId);
     }
 
-    public boolean isDisplayShowOnStartup() {
-        return displayShowOnStartup;
-    }
-
     public void setDisplayShowOnStartup(boolean displayShowOnStartup) {
         this.displayShowOnStartup = displayShowOnStartup;
-    }
-
-    public boolean isShowOnStartup() {
-        return showOnStartup;
-    }
-
-    public void setShowOnStartup(boolean showOnStartup) {
-        this.showOnStartup = showOnStartup;
     }
 }

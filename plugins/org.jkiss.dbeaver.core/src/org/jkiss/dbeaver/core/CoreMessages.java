@@ -16,7 +16,7 @@
  */
 package org.jkiss.dbeaver.core;
 
-import org.jkiss.dbeaver.utils.NLS;
+import org.eclipse.osgi.util.NLS;
 
 public class CoreMessages extends NLS {
     public static final String BUNDLE_NAME = "org.jkiss.dbeaver.core.CoreResources"; //$NON-NLS-1$
@@ -55,6 +55,8 @@ public class CoreMessages extends NLS {
     public static String action_menu_tools_find_in_navigator;
     public static String action_menu_transaction_pref_page_link;
     public static String action_menu_transaction_pref_page_link_extended;
+    public static String action_menu_transaction_commit_mode_edit_restricted_dialog_title;
+    public static String action_menu_transaction_commit_mode_edit_restricted_dialog_description;
 
     public static String pref_page_connection_types_label_auto_close_enabled_tip;
     public static String pref_page_connection_types_label_auto_close_ttl_tip;
@@ -457,7 +459,6 @@ public class CoreMessages extends NLS {
     public static String pref_page_database_general_checkbox_add_special_DDL_info_tip;
     // EntityEditor
     public static String pref_page_ui_general_show_full_name_in_editor;
-    public static String pref_page_ui_general_show_table_grid;
     public static String pref_page_ui_general_show_preview_on_save;
     // DatabaseGeneral
     public static String pref_page_ui_general_group_task_bar;
@@ -639,8 +640,6 @@ public class CoreMessages extends NLS {
     public static String pref_page_label_edit_permissions;
     public static String pref_page_logs_files_max_size_label;
     public static String pref_page_logs_files_max_count_label;
-
-    public static String popup_open_browser_open_external_browser;
 
     public static String pref_page_accessibility_screen_reader_msg;
     public static String pref_page_accessibility_screen_reader_description;

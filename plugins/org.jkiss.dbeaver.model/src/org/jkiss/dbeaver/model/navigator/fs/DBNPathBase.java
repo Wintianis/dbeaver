@@ -25,16 +25,14 @@ import org.jkiss.dbeaver.model.DBPDataSourceContainer;
 import org.jkiss.dbeaver.model.DBPImage;
 import org.jkiss.dbeaver.model.fs.DBFResourceAdapter;
 import org.jkiss.dbeaver.model.meta.Property;
-import org.jkiss.dbeaver.model.navigator.DBNEvent;
-import org.jkiss.dbeaver.model.navigator.DBNLazyNode;
-import org.jkiss.dbeaver.model.navigator.DBNNode;
-import org.jkiss.dbeaver.model.navigator.DBNUtils;
+import org.jkiss.dbeaver.model.navigator.*;
 import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
 import org.jkiss.dbeaver.runtime.DBWorkbench;
 import org.jkiss.utils.ArrayUtils;
 import org.jkiss.utils.ByteNumberFormat;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -242,10 +240,10 @@ public abstract class DBNPathBase extends DBNNode implements DBNLazyNode {
 
         if (getOwnerProject() instanceof DBFResourceAdapter rm) {
             // Drop supported only if both nodes are resource with the same handler and DROP feature is supported
-            return otherNode.getAdapter(Path.class) != null
-                   && otherNode != this
-                   && otherNode.getParentNode() != this
-                   && !this.isChildOf(otherNode);
+            return (otherNode.getAdapter(Path.class) != null || (otherNode instanceof DBNStreamData source && source.supportsStreamData()))
+                && otherNode != this
+                && otherNode.getParentNode() != this
+                && !this.isChildOf(otherNode);
         }
         return false;
     }
@@ -288,7 +286,18 @@ public abstract class DBNPathBase extends DBNNode implements DBNLazyNode {
                     break;
                 }
                 Path resource = node.getAdapter(Path.class);
-                if (resource == null || !Files.exists(resource)) {
+                if (resource == null) {
+                    try (InputStream inputStream = node.getAdapter(InputStream.class)) {
+                        if (inputStream != null) {
+                            monitor.subTask("Copy file");
+                            Files.copy(inputStream, folder.resolve(node.getNodeDisplayName()));
+                        }
+                    } finally {
+                        monitor.worked(1);
+                    }
+                    continue;
+                }
+                if (Files.notExists(resource)) {
                     log.debug("Resource " + resource + " doesn't not exists");
                     continue;
                 }

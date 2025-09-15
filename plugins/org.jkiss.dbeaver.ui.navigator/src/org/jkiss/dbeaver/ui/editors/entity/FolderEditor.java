@@ -65,6 +65,12 @@ public class FolderEditor extends EditorPart implements INavigatorModelView, IRe
 
         UIExecutionQueue.queueExec(() -> {
             final DBNNode navigatorNode = getEditorInput().getNavigatorNode();
+            if (navigatorNode == null) {
+                // We don't have a node - can't do much.
+                getEditorSite().getPage().closeEditor(this, false);
+                return;
+            }
+
             setTitleImage(DBeaverIcons.getImage(navigatorNode.getNodeIconDefault()));
             setPartName(navigatorNode.getNodeDisplayName());
 
@@ -118,6 +124,7 @@ public class FolderEditor extends EditorPart implements INavigatorModelView, IRe
         return false;
     }
 
+    @Nullable
     @Override
     public DBNNode getRootNode() {
         return getEditorInput().getNavigatorNode();
@@ -253,7 +260,7 @@ public class FolderEditor extends EditorPart implements INavigatorModelView, IRe
             setRootNode(node);
             loadData();
             setPartName(node.getNodeDisplayName());
-            setTitleImage(DBeaverIcons.getImage(node.getNodeIcon()));
+            setTitleImage(DBeaverIcons.getImage(node.getNodeIconDefault()));
             updateActions();
 
             // Update editor input
